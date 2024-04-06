@@ -85,7 +85,18 @@ void displayNumber(unsigned int digit1, unsigned int digit2){
    P3OUT|=P3BIT3;
 
 }
-
+void blink(unsigned int digit1, unsigned int digit2,int repeat,int frcq=300)
+{
+    int j;
+    for(j=0;j<repeat;j++)
+    {
+        displayNumber(digit1,digit2);
+        delay(frcq);
+        close7();
+        delay(frcq);
+        displayNumber(digit1, digit2);
+    }
+}
 void anime()//random animation
 {
     int i;
@@ -109,6 +120,7 @@ void testDisplay()//測試7段顯示器
     }
     close7();
 }
+//用C++多載弄一個同名、有參數的函數，為了在閒置顯示時可以偵測按鈕
 void testDisplay(short idle)//閒置測試，時刻檢查中斷
 {
     int i;
@@ -124,12 +136,6 @@ void testDisplay(short idle)//閒置測試，時刻檢查中斷
     }
     close7();
 }
-//seed
-
-// void srand(unsigned int new_seed) {
-//     seed = new_seed;
-// }
-
 
 int throw_dice()//做擲骰子的動作
 {
@@ -141,19 +147,10 @@ int throw_dice()//做擲骰子的動作
     anime();
     dice1=rand()%6+1;dice2=rand()%6+1;
     total=dice1+dice2;
-    int replay;
     //閃爍強調抽出點數
-    for(replay=0;replay<4;replay++)
-    {
-        displayNumber(dice1, dice2);
-        delay(400);
-        close7();//熄滅
+    blink(dice1,dice2,2,600);
 
-    }
-
-
-    displayNumber(total/10, total%10);
-    delay(3000);
+    blink(total/10, total%10,3,100);
 
 
     return total;
@@ -203,11 +200,7 @@ void gameEnd(unsigned short result){
          }
          else
          {
-             displayNumber(target/10, target%10);
-             delay(300);
-             close7();
-             delay(300);
-             displayNumber(target/10, target%10);
+             blink(target/10, target%10,2);
          }
      }while(totalValue!=7 && totalValue!=target) ;//一直重複直到擲出 7 or target
 
